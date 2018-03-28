@@ -183,5 +183,27 @@ namespace NuGet.Protocol.Plugins
 
             return _rawPluginPaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
         }
+
+#if IS_DESKTOP
+        private static string NuGetPluginPattern = "*NuGet.Plugin.exe";
+#else 
+        private static string NuGetPluginPattern = "*NuGet.Plugin.dll";
+#endif
+
+        private IEnumerable<string> GetUserDirectoryPlugins()
+        {
+            var directories = new List<string>();
+
+            directories.Add(System.Reflection.Assembly.GetEntryAssembly().Location);
+            directories.Add(NuGetEnvironment.GetFolderPath(NuGetFolderPath.UserSettingsDirectory));
+
+            var paths = new List<string>();
+            foreach (var directory in directories.Where(Directory.Exists))
+            {
+                paths.AddRange(Directory.EnumerateFiles(directory, NuGetPluginPattern, SearchOption.TopDirectoryOnly));
+            }
+
+            return paths;
+        }
     }
 }
