@@ -24,6 +24,12 @@ namespace NuGet.Protocol.Plugins
         private readonly SemaphoreSlim _semaphore;
         private readonly EmbeddedSignatureVerifier _verifier;
 
+#if IS_DESKTOP
+        private static string NuGetPluginPattern = "*NuGet.Plugin.exe";
+#else
+        private static string NuGetPluginPattern = "*NuGet.Plugin.dll";
+#endif
+
         /// <summary>
         /// Instantiates a new <see cref="PluginDiscoverer" /> class.
         /// </summary>
@@ -178,32 +184,46 @@ namespace NuGet.Protocol.Plugins
         {
             if (string.IsNullOrEmpty(_rawPluginPaths))
             {
-                return Enumerable.Empty<string>();
+                return GetConventionBasedPlugins();
             }
 
             return _rawPluginPaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
-#if IS_DESKTOP
-        private static string NuGetPluginPattern = "*NuGet.Plugin.exe";
-#else 
-        private static string NuGetPluginPattern = "*NuGet.Plugin.dll";
-#endif
-
-        private IEnumerable<string> GetUserDirectoryPlugins()
+        private IEnumerable<string> GetConventionBasedPlugins()
         {
             var directories = new List<string>();
-
-            directories.Add(System.Reflection.Assembly.GetEntryAssembly().Location);
-            directories.Add(NuGetEnvironment.GetFolderPath(NuGetFolderPath.UserSettingsDirectory));
+            directories.Add(GetNuGetHomePluginsPath());
+            directories.Add(GetInternalPlugins());
 
             var paths = new List<string>();
             foreach (var directory in directories.Where(Directory.Exists))
             {
                 paths.AddRange(Directory.EnumerateFiles(directory, NuGetPluginPattern, SearchOption.TopDirectoryOnly));
             }
-
+            
             return paths;
+        }
+
+        private static string GetInternalPlugins()
+        {
+            var assemblyLocation = System.Reflection.Assembly.GetEntryAssembly().Location;
+
+            return assemblyLocation;
+        }
+
+        private static string GetNuGetHomePluginsPath()
+        {
+            var nuGetHome = NuGetEnvironment.GetFolderPath(NuGetFolderPath.NuGetHome);
+
+            return Path.Combine(nuGetHome,
+                "Plugins",
+#if IS_DESKTOP
+                "FullFramework"
+#else
+                "NETCore"
+#endif
+                );
         }
     }
 }
