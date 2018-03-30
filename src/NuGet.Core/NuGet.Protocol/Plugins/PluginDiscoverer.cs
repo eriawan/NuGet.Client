@@ -192,6 +192,7 @@ namespace NuGet.Protocol.Plugins
 
         private IEnumerable<string> GetConventionBasedPlugins()
         {
+            System.Diagnostics.Debugger.Launch();
             var directories = new List<string>();
             directories.Add(GetNuGetHomePluginsPath());
             directories.Add(GetInternalPlugins());
@@ -209,7 +210,7 @@ namespace NuGet.Protocol.Plugins
         {
             var assemblyLocation = System.Reflection.Assembly.GetEntryAssembly().Location;
 
-            return assemblyLocation;
+            return Path.GetDirectoryName(assemblyLocation);
         }
 
         private static string GetNuGetHomePluginsPath()
@@ -217,11 +218,11 @@ namespace NuGet.Protocol.Plugins
             var nuGetHome = NuGetEnvironment.GetFolderPath(NuGetFolderPath.NuGetHome);
 
             return Path.Combine(nuGetHome,
-                "Plugins",
+                "plugins",
 #if IS_DESKTOP
-                "FullFramework"
+                "netframework"
 #else
-                "NETCore"
+                "netcore"
 #endif
                 );
         }
