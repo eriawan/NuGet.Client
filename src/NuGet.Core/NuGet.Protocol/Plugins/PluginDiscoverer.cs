@@ -17,6 +17,9 @@ namespace NuGet.Protocol.Plugins
     /// </summary>
     public sealed class PluginDiscoverer : IPluginDiscoverer
     {
+
+        public static string InternalPluginDiscoveryRoot { get; set; } = null;
+
         private bool _isDisposed;
         private List<PluginFile> _pluginFiles;
         private readonly string _rawPluginPaths;
@@ -192,7 +195,6 @@ namespace NuGet.Protocol.Plugins
 
         private IEnumerable<string> GetConventionBasedPlugins()
         {
-            System.Diagnostics.Debugger.Launch();
             var directories = new List<string>();
             directories.Add(GetNuGetHomePluginsPath());
             directories.Add(GetInternalPlugins());
@@ -208,9 +210,12 @@ namespace NuGet.Protocol.Plugins
 
         private static string GetInternalPlugins()
         {
-            var assemblyLocation = System.Reflection.Assembly.GetEntryAssembly().Location;
+            var rootDirectory = InternalPluginDiscoveryRoot;
 
-            return Path.GetDirectoryName(assemblyLocation);
+            if(InternalPluginDiscoveryRoot == null) {
+                rootDirectory = System.Reflection.Assembly.GetEntryAssembly().Location;
+            }
+            return Path.GetDirectoryName(rootDirectory);
         }
 
         private static string GetNuGetHomePluginsPath()
@@ -222,7 +227,7 @@ namespace NuGet.Protocol.Plugins
 #if IS_DESKTOP
                 "netframework"
 #else
-                "netcore"
+                "dotnet"
 #endif
                 );
         }

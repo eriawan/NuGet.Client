@@ -169,6 +169,8 @@ namespace NuGet.CommandLine
         /// </summary>
         protected void SetDefaultCredentialProvider()
         {
+            Protocol.Plugins.PluginDiscoverer.InternalPluginDiscoveryRoot = "setMsBuild";
+
             CredentialService = new CredentialService(GetCredentialProviders(), NonInteractive);
 
             CoreV2.NuGet.HttpClient.DefaultCredentialProvider = new CredentialServiceAdapter(CredentialService);
