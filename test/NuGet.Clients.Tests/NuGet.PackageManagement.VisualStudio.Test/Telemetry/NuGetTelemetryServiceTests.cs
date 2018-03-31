@@ -33,7 +33,8 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                 "3.5.0-beta2",
                 "15e9591f-9391-4ddf-a246-ca9e0351277d",
                 projectType,
-                3);
+                3,
+                true);
             var target = new NuGetVSTelemetryService(telemetrySession.Object);
 
             // Act
