@@ -386,6 +386,11 @@ namespace NuGet.Common
         NU3033 = 3033,
 
         /// <summary>
+        /// The primary signature certificate does not match the trusted certificate list.
+        /// </summary>
+        NU3034 = 3034,
+
+        /// <summary>
         /// Undefined Package Error.
         /// </summary>
         NU5000 = 5000,
