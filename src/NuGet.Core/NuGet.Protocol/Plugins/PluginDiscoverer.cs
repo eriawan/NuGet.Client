@@ -17,21 +17,12 @@ namespace NuGet.Protocol.Plugins
     /// </summary>
     public sealed class PluginDiscoverer : IPluginDiscoverer
     {
-
-        public static string InternalPluginDiscoveryRoot { get; set; } = null;
-
         private bool _isDisposed;
         private List<PluginFile> _pluginFiles;
         private readonly string _rawPluginPaths;
         private IEnumerable<PluginDiscoveryResult> _results;
         private readonly SemaphoreSlim _semaphore;
         private readonly EmbeddedSignatureVerifier _verifier;
-
-#if IS_DESKTOP
-        private static string NuGetPluginPattern = "*NuGet.Plugin.exe";
-#else
-        private static string NuGetPluginPattern = "*NuGet.Plugin.dll";
-#endif
 
         /// <summary>
         /// Instantiates a new <see cref="PluginDiscoverer" /> class.
@@ -187,49 +178,11 @@ namespace NuGet.Protocol.Plugins
         {
             if (string.IsNullOrEmpty(_rawPluginPaths))
             {
-                return GetConventionBasedPlugins();
+                var directories = new List<string> { PluginDiscoveryUtility.GetNuGetHomePluginsPath(), PluginDiscoveryUtility.GetInternalPlugins() };
+                return PluginDiscoveryUtility.GetConventionBasedPlugins(directories);
             }
 
             return _rawPluginPaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        private IEnumerable<string> GetConventionBasedPlugins()
-        {
-            var directories = new List<string>();
-            directories.Add(GetNuGetHomePluginsPath());
-            directories.Add(GetInternalPlugins());
-
-            var paths = new List<string>();
-            foreach (var directory in directories.Where(Directory.Exists))
-            {
-                paths.AddRange(Directory.EnumerateFiles(directory, NuGetPluginPattern, SearchOption.TopDirectoryOnly));
-            }
-            
-            return paths;
-        }
-
-        private static string GetInternalPlugins()
-        {
-            var rootDirectory = InternalPluginDiscoveryRoot;
-
-            if(InternalPluginDiscoveryRoot == null) {
-                rootDirectory = System.Reflection.Assembly.GetEntryAssembly().Location;
-            }
-            return Path.GetDirectoryName(rootDirectory);
-        }
-
-        private static string GetNuGetHomePluginsPath()
-        {
-            var nuGetHome = NuGetEnvironment.GetFolderPath(NuGetFolderPath.NuGetHome);
-
-            return Path.Combine(nuGetHome,
-                "plugins",
-#if IS_DESKTOP
-                "netframework"
-#else
-                "dotnet"
-#endif
-                );
         }
     }
 }
