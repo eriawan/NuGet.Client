@@ -34,11 +34,11 @@ namespace NuGet.Packaging.FuncTest
                 allowUnsigned: false,
                 allowIllegal: false,
                 allowUntrusted: false,
-                allowUntrustedSelfIssuedCertificate: true,
                 allowIgnoreTimestamp: true,
                 allowMultipleTimestamps: true,
                 allowNoTimestamp: true,
-                allowUnknownRevocation: true);
+                allowUnknownRevocation: true,
+                allowAlwaysVerifyingCountersignature: false);
         }
 
         [CIOnlyFact]
@@ -136,11 +136,11 @@ namespace NuGet.Packaging.FuncTest
                     allowUnsigned: false,
                     allowIllegal: false,
                     allowUntrusted: true,
-                    allowUntrustedSelfIssuedCertificate: true,
                     allowIgnoreTimestamp: true,
                     allowMultipleTimestamps: true,
                     allowNoTimestamp: true,
-                    allowUnknownRevocation: true);
+                    allowUnknownRevocation: true,
+                    allowAlwaysVerifyingCountersignature: false);
 
                 var verifier = new PackageSignatureVerifier(trustProviders, settings);
 

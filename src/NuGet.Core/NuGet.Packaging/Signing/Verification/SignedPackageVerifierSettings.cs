@@ -23,13 +23,13 @@ namespace NuGet.Packaging.Signing
         /// </summary>
         public bool AllowUntrusted { get; }
 
-        public bool AllowUntrustedSelfIssuedCertificate { get; }
-
         public bool AllowIgnoreTimestamp { get; }
 
         public bool AllowMultipleTimestamps { get; }
 
         public bool AllowNoTimestamp { get; }
+
+        public bool AllowAlwaysVerifyingCountersignature { get; }
 
         /// <summary>
         /// Treat unknown revocation status as a warning instead of an error during verification.
@@ -40,20 +40,20 @@ namespace NuGet.Packaging.Signing
             bool allowUnsigned,
             bool allowIllegal,
             bool allowUntrusted,
-            bool allowUntrustedSelfIssuedCertificate,
             bool allowIgnoreTimestamp,
             bool allowMultipleTimestamps,
             bool allowNoTimestamp,
-            bool allowUnknownRevocation)
+            bool allowUnknownRevocation,
+            bool allowAlwaysVerifyingCountersignature)
         {
             AllowUnsigned = allowUnsigned;
             AllowIllegal = allowIllegal;
             AllowUntrusted = allowUntrusted;
-            AllowUntrustedSelfIssuedCertificate = allowUntrustedSelfIssuedCertificate;
             AllowIgnoreTimestamp = allowIgnoreTimestamp;
             AllowMultipleTimestamps = allowMultipleTimestamps;
             AllowNoTimestamp = allowNoTimestamp;
             AllowUnknownRevocation = allowUnknownRevocation;
+            AllowAlwaysVerifyingCountersignature = allowAlwaysVerifyingCountersignature;
         }
 
         /// <summary>
@@ -63,11 +63,11 @@ namespace NuGet.Packaging.Signing
             allowUnsigned: true,
             allowIllegal: true,
             allowUntrusted: true,
-            allowUntrustedSelfIssuedCertificate: true,
             allowIgnoreTimestamp: true,
             allowMultipleTimestamps: true,
             allowNoTimestamp: true,
-            allowUnknownRevocation: true);
+            allowUnknownRevocation: true,
+            allowAlwaysVerifyingCountersignature: true);
 
         /// <summary>
         /// Default settings.
@@ -75,17 +75,30 @@ namespace NuGet.Packaging.Signing
         public static SignedPackageVerifierSettings Default { get; } = AllowAll;
 
         /// <summary>
-        /// Default policy for scenarios in VS
+        /// Default policy for scenarios in Accept mode
         /// </summary>
-        public static SignedPackageVerifierSettings VSClientDefaultPolicy { get; } = new SignedPackageVerifierSettings(
+        public static SignedPackageVerifierSettings AcceptModeDefaultPolicy { get; } = new SignedPackageVerifierSettings(
             allowUnsigned: true,
             allowIllegal: true,
             allowUntrusted: true,
-            allowUntrustedSelfIssuedCertificate: true,
             allowIgnoreTimestamp: true,
             allowMultipleTimestamps: true,
             allowNoTimestamp: true,
-            allowUnknownRevocation: true);
+            allowUnknownRevocation: true,
+            allowAlwaysVerifyingCountersignature: false);
+
+        /// <summary>
+        /// Default policy for scenarios in Require mode
+        /// </summary>
+        public static SignedPackageVerifierSettings RequireModeDefaultPolicy { get; } = new SignedPackageVerifierSettings(
+            allowUnsigned: false,
+            allowIllegal: false,
+            allowUntrusted: false,
+            allowIgnoreTimestamp: true,
+            allowMultipleTimestamps: true,
+            allowNoTimestamp: true,
+            allowUnknownRevocation: true,
+            allowAlwaysVerifyingCountersignature: false);
 
         /// <summary>
         /// Default policy for nuget.exe verify --signatures command
@@ -94,10 +107,10 @@ namespace NuGet.Packaging.Signing
             allowUnsigned: false,
             allowIllegal: false,
             allowUntrusted: false,
-            allowUntrustedSelfIssuedCertificate: true,
             allowIgnoreTimestamp: false,
             allowMultipleTimestamps: true,
             allowNoTimestamp: true,
-            allowUnknownRevocation: true);
+            allowUnknownRevocation: true,
+            allowAlwaysVerifyingCountersignature: true);
     }
 }
