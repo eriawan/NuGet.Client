@@ -945,4 +945,7 @@ Please see https://aka.ms/troubleshoot_nuget_cache for more help.</value>
   <data name="Accessibility_ColumnSortedDescendingHelpText" xml:space="preserve">
     <value>Sorted descending, press space to sort ascending</value>
   </data>
+  <data name="Deprecation_MoreInfo" xml:space="preserve">
+    <value>More info</value>
+  </data>
 </root>
