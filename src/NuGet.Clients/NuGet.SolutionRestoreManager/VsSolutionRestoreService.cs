@@ -325,12 +325,12 @@ namespace NuGet.SolutionRestoreManager
         {
             if (restoreInfoSource == null)
             {
-                throw new ArgumentException(Resources.Argument_Cannot_Be_Null_Or_Empty, nameof(restoreInfoSource));
+                throw new ArgumentNullException(nameof(restoreInfoSource));
             }
 
             if (string.IsNullOrEmpty(restoreInfoSource.Name))
             {
-                throw new ArgumentNullException(Resources.Argument_Cannot_Be_Null_Or_Empty, $"{nameof(restoreInfoSource)}.Name");
+                throw new ArgumentNullException(Resources.Argument_Cannot_Be_Null_Or_Empty, $"{nameof(restoreInfoSource)}.{nameof(restoreInfoSource.Name)}");
             }
 
             string projectUniqueName = restoreInfoSource.Name;

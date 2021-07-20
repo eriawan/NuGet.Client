@@ -9,6 +9,6 @@ namespace NuGet.VisualStudio.Telemetry
         AllProjectsNominated, // All projects have been nominated.
         NominationsIdleTimeout, // The timeout for all nominations has been exceeded. This means that bulk restore coordination is *not* enabled.
         ProjectsReady, // The projects ready check has been completed and no projects are reporting pending nominations.
-        ProjectsReadyCheckTimeout, // We have spent a considerable amount of time in the projects ready check
+        ProjectsReadyCheckTimeout, // We have spent a considerable amount of time in the projects ready check.
     }
 }
