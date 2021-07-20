@@ -408,17 +408,17 @@ namespace NuGet.PackageManagement.UI
             }
         }
 
-        private Uri _packageDeprecationAlternatePackageUri;
-        public Uri PackageDeprecationAlternatePackageUri
+        private string _packageDeprecationAlternatePackageId;
+        public string PackageDeprecationAlternatePackageId
         {
-            get => _packageDeprecationAlternatePackageUri;
+            get => _packageDeprecationAlternatePackageId;
             set
             {
-                if (_packageDeprecationAlternatePackageUri != value)
+                if (_packageDeprecationAlternatePackageId != value)
                 {
-                    _packageDeprecationAlternatePackageUri = value;
+                    _packageDeprecationAlternatePackageId = value;
 
-                    OnPropertyChanged(nameof(PackageDeprecationAlternatePackageUri));
+                    OnPropertyChanged(nameof(PackageDeprecationAlternatePackageId));
                 }
             }
         }
@@ -490,7 +490,7 @@ namespace NuGet.PackageManagement.UI
                     // deprecation metadata
                     string newDeprecationReasons = null;
                     string newAlternatePackageText = null;
-                    Uri newAlternatePackageUri = null;
+                    string newAlternatePackageId = null;
                     if (_packageMetadata?.DeprecationMetadata != null)
                     {
                         newDeprecationReasons = ExplainPackageDeprecationReasons(_packageMetadata.DeprecationMetadata.Reasons?.ToList());
@@ -499,14 +499,13 @@ namespace NuGet.PackageManagement.UI
                         if (alternatePackage != null)
                         {
                             newAlternatePackageText = GetPackageDeprecationAlternatePackageText(alternatePackage);
-                            UriBuilder builder = new UriBuilder("nugetpm", alternatePackage.PackageId);
-                            newAlternatePackageUri = builder.Uri;
+                            newAlternatePackageId = alternatePackage.PackageId;
                         }
                     }
 
                     PackageDeprecationReasons = newDeprecationReasons;
                     PackageDeprecationAlternatePackageText = newAlternatePackageText;
-                    PackageDeprecationAlternatePackageUri = newAlternatePackageUri;
+                    PackageDeprecationAlternatePackageId = newAlternatePackageId;
 
                     // vulnerability metadata
                     int newVulnerabilityMaxSeverity = -1;
